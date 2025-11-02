@@ -26,12 +26,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $color= "red";
     
     }
-
-    // Step 3: Check if user exists
+    
+    if (empty($msg)){
+// Step 3: Check if user exists
     $stmt = $conn->prepare("SELECT id, username, name, email, password FROM users WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
+    
+    
 
     if ($result->num_rows === 1) {
         $user = $result->fetch_assoc();
@@ -44,8 +47,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['email'] = $user['email'];
             $_SESSION['name'] = $user['name'];
 
-            echo "<p style='color:green;'>✅ Login successful! Redirecting...</p>";
-            echo '<meta http-equiv="refresh" content="3;url=panel.php">';
+            
+
+            header("location:msg.php?msg=Login successful&goto=panel.php&type=success");
 
             // ✅ Added: Log success
             $status = 1;
@@ -58,8 +62,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit();
 
         } else {
-            echo "<p style='color:red;'>❌ Incorrect password.</p>";
-
+            
+            $msg = 'Incorrect password';
+            $color = "red";
             // ✅ Added: Log failed password
             $status = 0;
             $log_stmt = $conn->prepare("INSERT INTO login_log (ip_address, user_agent, referer, login_status, username)
@@ -68,9 +73,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $log_stmt->execute();
             $log_stmt->close();
         }
-
+    
     } else {
-        echo "<p style='color:red;'>❌ No account found with that email.</p>";
+        $msg = 'No account found with that email';
+        $color = "red";
 
         // ✅ Added: Log failed 
             $status = 0;
@@ -83,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $stmt->close();
     $conn->close();
-}
+}}
 ?>
 
 
@@ -103,12 +109,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
       <div class="login-group">
         <label for="email" class="login-label">Email</label>
-        <input type="email" name="email" id="email" class="login-input" placeholder="Enter your email" required>
+        <input type="email" name="email" id="email" class="login-input" placeholder="Enter your email" >
       </div>
 
       <div class="login-group">
         <label for="password" class="login-label">Password</label>
-        <input type="password" name="password" id="password" class="login-input" placeholder="Enter your password" required>
+        <input type="password" name="password" id="password" class="login-input" placeholder="Enter your password" >
       </div>
 
       <button type="submit" class="login-button">Login</button>
