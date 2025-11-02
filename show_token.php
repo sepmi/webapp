@@ -23,7 +23,7 @@ if (!empty($username) && !empty($token)) {
     if ($result->num_rows === 1) {
         $user = $result->fetch_assoc();
         // ✅ Compare token with stored one
-        if (hash_equals($user['reset_token'], $token)) {
+        if ($user['reset_token']=== $token) {
             $isValid = true;
         } else {
             $message = "<p class='error'>❌ Invalid or expired token for this user.</p>";

@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $update_stmt->bind_param("ss", $token, $username);
             if ($update_stmt->execute()) {
                 // Redirect to show_token.php
-                header("Location: show_token.php?username=" . urlencode($username) . "&token=" . urlencode($token));
+                header("Location: reset_password.php?username=" . urlencode($username) . "&token=" . urlencode($token));
                 exit();
             } else {
                 echo "<p style='color:red;'>❌ Failed to save reset token.</p>";
@@ -45,6 +45,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta charset="UTF-8">
   <title>Forgot Password</title>
   <link rel="stylesheet" href="//static.webapp.ir/style.css">
+
+  
 </head>
 <body>
 
