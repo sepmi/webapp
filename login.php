@@ -93,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <title>Login Page</title>
     
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="//static.webapp.ir/style.css">
 </head>
 <body>
 
@@ -110,6 +110,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <p class="text-center text-sm text-gray-500 mt-4">
       Don’t have an account? 
       <a href="/register.php" class="text-blue-600 hover:underline">Register here</a>
+    </p>
+
+    <p class="text-center text-sm text-gray-500 mt-4">
+      Forget your password? 
+      <a href="/forget_password.php" class="text-blue-600 hover:underline">Forget Password </a>
     </p>
 </form>
 
