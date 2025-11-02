@@ -104,74 +104,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>User Registration</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="//static.webapp.ir/style.css">
 </head>
 
+<body class="reg-body">
 
+  <div class="reg-container">
+    <h2 class="reg-title">📝 Register New User</h2>
 
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <form action="/register.php" method="POST" class="reg-form">
 
-  <div class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
-    <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Register New User</h2>
-
-    <form action="/register.php" method="POST" class="space-y-5">
-      
-     <!-- name -->
-      <div>
-        <label for="name" class="block text-sm font-medium text-gray-700 mb-1">name</label>
-        <input type="text" id="name" name="name" required 
-               class="w-full border border-gray-300 rounded-lg p-2 focus:ring focus:ring-blue-200 focus:border-blue-500" 
-               placeholder="Enter your name">
+      <!-- Name -->
+      <div class="reg-group">
+        <label for="name" class="reg-label">Name</label>
+        <input type="text" id="name" name="name" required class="reg-input" placeholder="Enter your name">
       </div>
 
       <!-- Username -->
-      <div>
-        <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
-        <input type="text" id="username" name="username" required 
-               class="w-full border border-gray-300 rounded-lg p-2 focus:ring focus:ring-blue-200 focus:border-blue-500" 
-               placeholder="Enter your username">
+      <div class="reg-group">
+        <label for="username" class="reg-label">Username</label>
+        <input type="text" id="username" name="username" required class="reg-input" placeholder="Enter your username">
       </div>
-
-     
 
       <!-- Email -->
-      <div>
-        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-        <input type="email" id="email" name="email" required
-               class="w-full border border-gray-300 rounded-lg p-2 focus:ring focus:ring-blue-200 focus:border-blue-500"
-               placeholder="you@example.com">
+      <div class="reg-group">
+        <label for="email" class="reg-label">Email</label>
+        <input type="email" id="email" name="email" required class="reg-input" placeholder="you@example.com">
       </div>
-
-      
 
       <!-- Password -->
-      <div>
-        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-        <input type="password" id="password" name="password" required minlength="6"
-               class="w-full border border-gray-300 rounded-lg p-2 focus:ring focus:ring-blue-200 focus:border-blue-500"
-               placeholder="Create a password">
+      <div class="reg-group">
+        <label for="password" class="reg-label">Password</label>
+        <input type="password" id="password" name="password" required minlength="6" class="reg-input" placeholder="Create a password">
       </div>
+
       <!-- Invitation Code -->
-      <div>
-        <label for="invitation_code" class="block text-sm font-medium text-gray-700 mb-1">Invitation Code</label>
-        <input type="text" id="invitation_code" name="invitation_code" required
-               class="w-full border border-gray-300 rounded-lg p-2 focus:ring focus:ring-blue-200 focus:border-blue-500"
-               placeholder="Enter your invitation code">
+      <div class="reg-group">
+        <label for="invitation_code" class="reg-label">Invitation Code</label>
+        <input type="text" id="invitation_code" name="invitation_code" required class="reg-input" placeholder="Enter your invitation code">
       </div>
 
       <!-- Submit Button -->
-      <button type="submit" name="submit"
-              class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-200">
-        Register
-      </button>
-
+      <button type="submit" name="submit" class="reg-button">Register</button>
     </form>
 
-    <p class="text-center text-sm text-gray-500 mt-4">
+    <p class="reg-footer-text">
       Already have an account? 
-      <a href="/login.php" class="text-blue-600 hover:underline">Login here</a>
+      <a href="/login.php" class="reg-link">Login here</a>
     </p>
   </div>
 
 </body>
 </html>
+

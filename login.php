@@ -1,7 +1,7 @@
 <?php
 require_once("connection.php");
 session_start();
-
+$msg = "";
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email']);
     $password = trim($_POST['password']);
@@ -13,18 +13,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // ✅ Step 1: Check for empty inputs
     if (empty($email) || empty($password)) {
-        echo "<p style='color:red;'>❌ Please fill in both email and password.</p>";
-        echo '<meta http-equiv="refresh" content="3;url=login.php">';
-
-        exit();
+       
+        $msg = "Please fill in both email and password";
+        $color = "red";
+        
     }
 
     // ✅ Step 2: Validate email format
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        echo "<p style='color:red;'>❌ Invalid email format.</p>";
-        echo '<meta http-equiv="refresh" content="3;url=login.php">';
-
-        exit();
+  
+        $msg = " Invalid email format";
+        $color= "red";
+    
     }
 
     // Step 3: Check if user exists
@@ -90,33 +90,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Login Page</title>
-    
-    <link rel="stylesheet" href="//static.webapp.ir/style.css">
+  <meta charset="UTF-8">
+  <title>Login Page</title>
+  <link rel="stylesheet" href="//static.webapp.ir/style.css">
+   
 </head>
-<body>
+<body class="login-body">
 
-<form method="POST" action="">
-    <h2>Login</h2>
-    <label>Email</label>
-    <input type="email" name="email" required>
+  <div class="login-container">
+    <form method="POST" action="" class="login-form">
+      <h2 class="login-title">🔐 Login</h2>
 
-    <label>Password</label>
-    <input type="password" name="password" required>
+      <div class="login-group">
+        <label for="email" class="login-label">Email</label>
+        <input type="email" name="email" id="email" class="login-input" placeholder="Enter your email" required>
+      </div>
 
-    <button type="submit">Login</button>
+      <div class="login-group">
+        <label for="password" class="login-label">Password</label>
+        <input type="password" name="password" id="password" class="login-input" placeholder="Enter your password" required>
+      </div>
 
-    <p class="text-center text-sm text-gray-500 mt-4">
-      Don’t have an account? 
-      <a href="/register.php" class="text-blue-600 hover:underline">Register here</a>
-    </p>
+      <button type="submit" class="login-button">Login</button>
 
-    <p class="text-center text-sm text-gray-500 mt-4">
-      Forget your password? 
-      <a href="/forget_password.php" class="text-blue-600 hover:underline">Forget Password </a>
-    </p>
-</form>
+      <p class="login-link-text">
+        Don’t have an account?
+        <a href="/register.php" class="login-link">Register here</a>
+      </p>
+
+      <p class="login-link-text">
+        Forgot your password?
+        <a href="/forget_password.php" class="login-link">Reset it here</a>
+      </p>
+
+      <?php if (!empty($msg)): ?>
+        <p class="login-message" style="color: <?php echo htmlspecialchars($color); ?>">
+          <?php echo htmlspecialchars($msg); ?>
+        </p>
+      <?php endif; ?>
+    </form>
+  </div>
 
 </body>
 </html>
+

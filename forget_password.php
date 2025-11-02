@@ -9,6 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($username)) {
         echo "<p style='color:red;'>❌ Please enter your username.</p>";
     } else {
+        
         $stmt = $conn->prepare("SELECT id FROM users WHERE username = ?");
         $stmt->bind_param("s", $username);
         $stmt->execute();
@@ -38,29 +39,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $conn->close();
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Forgot Password</title>
   <link rel="stylesheet" href="//static.webapp.ir/style.css">
-
-  
 </head>
-<body>
+<body class="fp-body">
 
-<div class="container">
-  <form method="POST" action="">
-      <h2>🔒 Forgot Password</h2>
-      <label for="username">Username</label>
-      <input type="text" name="username" id="username" placeholder="Enter your username" required>
-      <button type="submit">Generate Reset Token</button>
-      <p class="footer-text">
-        <a href="login.php">⬅ Back to login</a>
+<div class="fp-container">
+  <form method="POST" action="" class="fp-form">
+      <h2 class="fp-title">🔒 Forgot Password</h2>
+
+      <div class="fp-group">
+        <label for="username" class="fp-label">Username</label>
+        <input type="text" name="username" id="username" class="fp-input" placeholder="Enter your username" required>
+      </div>
+
+      <button type="submit" class="fp-button">Generate Reset Token</button>
+
+      <p class="fp-footer-text">
+        <a href="login.php" class="fp-link">⬅ Back to login</a>
       </p>
   </form>
 </div>
 
 </body>
 </html>
+
