@@ -44,8 +44,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // ✅ Valid login
             $_SESSION['login'] = true;
-            $_SESSION['email'] = $user['email'];
-            $_SESSION['name'] = $user['name'];
+            // $_SESSION['email'] = $user['email'];
+            // $_SESSION['name'] = $user['name'];
+            $_SESSION['user_id'] = $user['id'];
 
             
 
@@ -98,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
   <meta charset="UTF-8">
   <title>Login Page</title>
-  <link rel="stylesheet" href="//static.webapp.ir/style.css">
+  <link rel="stylesheet" href="static/style.css">
    
 </head>
 <body class="login-body">

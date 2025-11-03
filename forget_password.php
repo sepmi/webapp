@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
   <meta charset="UTF-8">
   <title>Forgot Password</title>
-  <link rel="stylesheet" href="//static.webapp.ir/style.css">
+  <link rel="stylesheet" href="static/style.css">
 </head>
 <body class="fp-body">
 

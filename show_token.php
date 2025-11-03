@@ -45,7 +45,7 @@ $conn->close();
 <head>
   <meta charset="UTF-8">
   <title>Your Reset Token</title>
-  <link rel="stylesheet" href="style.css">
+  
 </head>
 <style>
 /* 🌙 Global Dark Theme */

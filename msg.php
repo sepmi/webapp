@@ -26,7 +26,7 @@ switch (strtolower($type)) {
 }
 
 // Redirect after 3 seconds
-header("refresh:3;url=$goto");
+//  header("refresh:3;url=$goto");
 ?>
 
 <!DOCTYPE html>
@@ -34,24 +34,7 @@ header("refresh:3;url=$goto");
 <head>
   <meta charset="UTF-8">
   <title>Message</title>
-  <link rel="stylesheet" href="//static.webapp.ir/style.css">
-
-  
-    <!-- <script>
-    let countdown = 3; // seconds
-    function updateCountdown() {
-      const counter = document.getElementById('redirect-timer');
-      if (countdown > 0) {
-        counter.textContent = countdown;
-        countdown--;
-        setTimeout(updateCountdown, 1000);
-      } else {
-        window.location.href = "<?php echo $goto; ?>";
-      }
-    }
-    window.onload = updateCountdown;
-  
-  </script> -->
+  <link rel="stylesheet" href="static/style.css">
 
 </head>
 <body class="msg-body">
@@ -61,8 +44,23 @@ header("refresh:3;url=$goto");
       <div class="msg-icon" style="color: <?php echo $msg_color; ?>;"><?php echo $icon; ?></div>
       <p class="msg-text" style="color: <?php echo $msg_color; ?>;"><?php echo $msg; ?></p>
       <p class="msg-redirect">Redirecting in 3 seconds...</p>
+      <script>
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const goto = urlParams.get('goto');
+
+        setTimeout(() => {
+          // location.href = "<?php echo $goto ?>"
+          location.href = goto || "inedx.php"
+        }, 3000);
+      </script>
     </div>
   </div>
 
 </body>
 </html>
+
+
+
+
+
