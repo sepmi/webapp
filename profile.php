@@ -12,7 +12,7 @@ if (isset($_GET['logout']) && $_GET['logout'] === 'true') {
         );
     }
     session_destroy();
-    header("Location: msg.php?msg=Logout%20successful&goto=login.php&type=success");
+    header("Location: msg.php?msg=Logout%20successful&goto=index.php&type=success");
     exit();
 }
 

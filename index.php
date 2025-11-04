@@ -12,20 +12,16 @@ if (isset($_GET['logout']) && $_GET['logout'] === 'true') {
         );
     }
     session_destroy();
-    header("Location: msg.php?msg=Logout%20successful&goto=login.php&type=success");
+    header("Location: msg.php?msg=Logout%20successful&goto=index.php&type=success");
     exit();
 }
 
-// ✅ Redirect if user not logged in
-if (!isset($_SESSION['login'])) {
-    header("Location: msg.php?msg=Please login first&type=error&goto=login.php");
-    exit();
-}
+// ✅ Get user_id if logged in
+$is_logged_in = isset($_SESSION['login']);
+$user_id = $is_logged_in ? $_SESSION['user_id'] : null;
 
-$user_id = $_SESSION['user_id'];
-
-// ✅ Handle Tweet submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty(trim($_POST['content']))) {
+// ✅ Handle Tweet submission only if logged in
+if ($is_logged_in && $_SERVER['REQUEST_METHOD'] === 'POST' && !empty(trim($_POST['content']))) {
     $content = trim($_POST['content']);
     $stmt = $conn->prepare("INSERT INTO tweets (user_id, content) VALUES (?, ?)");
     $stmt->bind_param("is", $user_id, $content);
@@ -57,20 +53,28 @@ $tweets = $conn->query($query);
     <div class="home-header-container">
       <h1 class="home-logo">🐦 Tweet Board</h1>
       <nav class="home-nav">
-        <a href="panel.php" class="home-nav-link">panel</a>
-        <a href="?logout=true" class="home-logout-btn">🚪 Logout</a>
+        <?php if ($is_logged_in): ?>
+          <a href="panel.php" class="home-nav-link">Panel</a>
+          <a href="?logout=true" class="home-logout-btn">🚪 Logout</a>
+        <?php else: ?>
+          <a href="login.php" class="home-nav-link">Login</a>
+        <?php endif; ?>
       </nav>
     </div>
   </header>
 
   <!-- ===== Main Content ===== -->
   <main class="home-container">
+
+    <!-- ✅ Show Tweet Form only if logged in -->
+    <?php if ($is_logged_in): ?>
     <section class="home-tweet-box">
       <form method="POST" class="home-tweet-form">
         <textarea name="content" class="home-textarea" placeholder="What's happening?" required></textarea>
         <button type="submit" class="home-btn">Tweet</button>
       </form>
     </section>
+    <?php endif; ?>
 
     <!-- ===== Tweets Feed ===== -->
     <section class="home-feed">

@@ -12,16 +12,17 @@ if (isset($_GET['logout']) && $_GET['logout'] === 'true') {
         );
     }
     session_destroy();
-    header("Location: msg.php?msg=Logout%20successful&goto=login.php&type=success");
+    header("Location: msg.php?msg=Logout%20successful&goto=index.php&type=success");
     exit();
 }
 
 // ✅ Check login
 if (!isset($_SESSION['login'])) {
-    echo "<p>Need to login first! Redirecting in 3 seconds...</p>";
-    echo "<script>
-            setTimeout(() => window.location.href = 'login.php', 3000);
-          </script>";
+    // echo "<p>Need to login first! Redirecting in 3 seconds...</p>";
+    // echo "<script>
+    //         setTimeout(() => window.location.href = 'login.php', 3000);
+    //       </script>";
+    header("Location: msg.php?msg=Need to login first! Redirecting in 3 seconds...&goto=login.php&type=error");
     exit();
 }
 
