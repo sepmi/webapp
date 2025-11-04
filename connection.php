@@ -1,9 +1,9 @@
 <?php
 // Database configuration
-$servername = "localhost";   // or your server IP
-$username   = "sepehr";        // replace with your MySQL username
-$password   = "Sepehr1234";            // replace with your MySQL password
-$dbname     = "voorivebdb";  // your database name
+$servername = "localhost";   
+$username   = "sepehr";      
+$password   = "Sepehr1234";  
+$dbname     = "voorivebdb";  
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);

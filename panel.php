@@ -102,7 +102,8 @@ $conn->close();
     <div class="panel-header-container">
       <h1 class="panel-header-logo">🌙 User Panel</h1>
       <nav class="panel-header-nav">
-        <a href="panel.php" class="panel-header-link">Dashboard</a>
+        <a href="index.php" class="panel-header-link">Home</a>
+        <a href="profile.php?user_id=<?php echo $id; ?>" class="panel-header-link">Profile</a>
         <a href="?logout=true" class="panel-header-logout">🚪 Logout</a>
       </nav>
     </div>
@@ -111,9 +112,15 @@ $conn->close();
   <!-- ✅ Main Content -->
   <main class="panel-container">
     <div class="panel-user-info">
-      <img src="http://static.webapp.ir/profile_picture/<?php echo htmlspecialchars($user['profile_picture']); ?>" 
+      <a href="profile.php?user_id=<?php echo $id; ?>">
+  <img src="http://static.webapp.ir/profile_picture/<?php echo htmlspecialchars($user['profile_picture']); ?>" 
+       alt="Profile Picture" 
+       class="panel-user-avatar">
+</a>
+
+      <!-- <img src="http://static.webapp.ir/profile_picture/<?php echo htmlspecialchars($user['profile_picture']); ?>" 
            alt="Profile Picture" 
-           class="panel-user-avatar">
+           class="panel-user-avatar"> -->
       <div>
         <h2 class="panel-user-name">👋 <?php echo htmlspecialchars($user['name']); ?></h2>
         <p class="panel-user-bio"><?php echo nl2br(htmlspecialchars($user['bio'] ?? 'No bio yet.')); ?></p>

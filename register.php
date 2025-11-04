@@ -13,15 +13,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Step 1: Basic validation
     if (empty($name) || empty($username) || empty($email) || empty($password) || empty($invitation_code)) {
-        echo "<p style='color:red;'>❌ All fields are required.</p>";
-        echo '<meta http-equiv="refresh" content="3;url=register.php">';
+        
+        header("location:msg.php?msg=❌ All fields are required&goto=register.php&type=error");
         exit();
     }
 
     // Step 2: Validate email format
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        echo "<p style='color:red;'>❌ Invalid email format.</p>";
-        echo '<meta http-equiv="refresh" content="3;url=register.php">';
+        
+        header("location:msg.php?msg=❌ Invalid email format&goto=register.php&type=error");
+        
         exit();
     }
 
@@ -32,8 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
-        echo "<p style='color:red;'>❌ Email already exists.</p>";
-        echo '<meta http-equiv="refresh" content="3;url=register.php">';
+        
+        header("location:msg.php?msg=❌ Email already exists&goto=register.php&type=error");
         exit();
     }
     $stmt->close();
@@ -45,8 +46,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
-        echo "<p style='color:red;'>❌ Username already exists.</p>";
-        echo '<meta http-equiv="refresh" content="3;url=register.php">';
+        
+        header("location:msg.php?msg=❌ Username already exists&goto=register.php&type=error");
         exit();
     }
     $stmt->close();
@@ -58,15 +59,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $result = $stmt->get_result();
 
     if ($result->num_rows === 0) {
-        echo "<p style='color:red;'>❌ Invalid invitation code.</p>";
-        echo '<meta http-equiv="refresh" content="3;url=register.php">';
+        header("location:msg.php?msg=❌ Invalid invitation code&goto=register.php&type=error");
         exit();
     }
 
     $code = $result->fetch_assoc();
     if ($code['used']) {
-        echo "<p style='color:red;'>❌ This invitation code has already been used.</p>";
-        echo '<meta http-equiv="refresh" content="3;url=register.php">';
+      
+        header("location:msg.php?msg=❌ This invitation code has already been used&goto=register.php&type=error");
         exit();
     }
 
