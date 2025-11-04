@@ -541,3 +541,252 @@ body {
   margin-top: 5px;
   border: 2px solid #444;
 }
+
+
+/* === User Info Header (name + avatar) === */
+.user-info-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 25px;
+  justify-content: flex-start;
+}
+
+.user-info-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 3px solid #61dafb;
+  object-fit: cover;
+  background-color: #333;
+  box-shadow: 0 0 8px rgba(97, 218, 251, 0.4);
+}
+
+.update-user-title {
+  margin: 0;
+  color: #61dafb;
+  font-size: 1.3em;
+  font-weight: 600;
+}
+
+
+/* === Bio Section === */
+.update-user-bio {
+  background-color: #2a2a3d;
+  border: 1px solid #333;
+  color: #ddd;
+  padding: 10px;
+  border-radius: 6px;
+  min-height: 80px;
+  resize: vertical;
+  font-family: inherit;
+  font-size: 0.95em;
+  line-height: 1.4;
+}
+
+.update-user-bio-display {
+  background-color: #181825;
+  color: #bbb;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-size: 0.9em;
+  max-width: 350px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  box-shadow: inset 0 0 4px rgba(255, 255, 255, 0.05);
+}
+
+
+
+
+
+
+/* 
+///////
+/
+/
+/
+/
+/
+/
+/
+/
+/
+/
+
+/
+/
+// */
+
+
+/* ===== Dark Theme Panel Page ===== */
+.panel-body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #0f172a;
+  color: #e2e8f0;
+  margin: 0;
+  padding: 0;
+}
+
+/* ===== Header ===== */
+.panel-header {
+  background-color: #1e293b;
+  border-bottom: 1px solid #334155;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  z-index: 100;
+}
+
+.panel-header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1000px;
+  margin: auto;
+  height: 100%;
+  padding: 0 20px;
+}
+
+.panel-header-logo {
+  font-size: 20px;
+  font-weight: 600;
+  color: #f1f5f9;
+}
+
+.panel-header-nav a {
+  text-decoration: none;
+  color: #94a3b8;
+  margin-left: 20px;
+  transition: 0.3s;
+}
+
+.panel-header-nav a:hover {
+  color: #38bdf8;
+}
+
+.panel-header-logout {
+  color: #f87171 !important;
+}
+
+/* ===== Main Content ===== */
+.panel-container {
+  margin: 100px auto 40px;
+  
+  background-color: #1e293b;
+  border-radius: 12px;
+  
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+   max-width: 520px; /* reduced from 700px */
+  padding: 25px; /* slightly smaller padding */
+}
+
+/* ===== User Info ===== */
+.panel-user-info {
+  display: flex;
+  align-items: center;
+  
+  
+
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.panel-user-avatar {
+  
+  
+  border-radius: 50%;
+  border: 3px solid #334155;
+  object-fit: cover;
+
+  width: 90px;
+  height: 90px;
+  border-width: 2px;
+}
+
+.panel-user-name {
+  font-size: 22px;
+  color: #f8fafc;
+  margin-bottom: 8px;
+}
+
+.panel-user-bio {
+  font-size: 14px;
+  color: #94a3b8;
+  max-width: 400px;
+  background-color: #0f172a;
+  padding: 10px;
+  border-radius: 10px;
+  white-space: pre-wrap;
+}
+
+/* ===== Form ===== */
+.panel-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.panel-label {
+  font-size: 14px;
+  color: #cbd5e1;
+  margin-top: 10px;
+}
+
+.panel-input, .panel-textarea, .panel-file {
+  background-color: #334155;
+  border: 1px solid #475569;
+  color: #f1f5f9;
+  border-radius: 8px;
+  
+  
+  transition: border-color 0.2s ease;
+
+  padding: 8px; /* smaller input padding */
+  font-size: 14px;
+}
+
+.panel-input:focus, .panel-textarea:focus {
+  border-color: #38bdf8;
+  outline: none;
+}
+
+.panel-textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.panel-btn {
+  background-color: #38bdf8;
+  color: #0f172a;
+  border: none;
+  
+  
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 15px;
+
+   padding: 10px;
+  font-size: 14px;
+  border-radius: 6px;
+}
+
+.panel-btn:hover {
+  background-color: #0ea5e9;
+}
+
+
+
+
+
+
+
+/* Make button smaller and cleaner */
+.panel-btn {
+  padding: 10px;
+  font-size: 14px;
+  border-radius: 6px;
+}

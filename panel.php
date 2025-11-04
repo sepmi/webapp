@@ -2,73 +2,91 @@
 require_once("connection.php");
 session_start();
 
-if(!isset($_SESSION['login'])){
+// ✅ Handle logout
+if (isset($_GET['logout']) && $_GET['logout'] === 'true') {
+    if (ini_get("session.use_cookies")) {
+        $params = session_get_cookie_params();
+        setcookie(session_name(), '', time() - 42000,
+            $params["path"], $params["domain"],
+            $params["secure"], $params["httponly"]
+        );
+    }
+    session_destroy();
+    header("Location: msg.php?msg=Logout%20successful&goto=login.php&type=success");
+    exit();
+}
+
+// ✅ Check login
+if (!isset($_SESSION['login'])) {
     echo "<p>Need to login first! Redirecting in 3 seconds...</p>";
     echo "<script>
-            setTimeout(function() {
-                window.location.href = 'login.php';
-            }, 3000);
+            setTimeout(() => window.location.href = 'login.php', 3000);
           </script>";
     exit();
-} else {
+}
 
-    $id = $_SESSION['user_id']; 
+$id = $_SESSION['user_id']; 
 
-    // ✅ Fetch user info
-    $stmt = $conn->prepare("SELECT * FROM users WHERE id = ?");
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $user = $result->fetch_assoc();
-    $stmt->close();
+// ✅ Fetch user info
+$stmt = $conn->prepare("SELECT * FROM users WHERE id = ?");
+$stmt->bind_param("i", $id);
+$stmt->execute();
+$result = $stmt->get_result();
+$user = $result->fetch_assoc();
+$stmt->close();
 
-    // ✅ Handle profile update
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $new_name = trim($_POST['name']);
-        $new_password = trim($_POST['password']);
-        $upload_dir = "/var/www/static/users_profiles/";
-        $profile_picture = $user['profile_picture'];
+// ✅ Handle update
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $new_name = trim($_POST['name']);
+    $new_bio = trim($_POST['bio']);
+    $new_password = trim($_POST['password']);
+    $upload_dir = "/var/www/static/profile_picture/";
 
-        // Handle file upload
-        if (!empty($_FILES['profile_picture']['name'])) {
-            $file_name = basename($_FILES['profile_picture']['name']);
-            $target_path = $upload_dir . $file_name;
-            $file_type = strtolower(pathinfo($target_path, PATHINFO_EXTENSION));
-            $allowed = ['jpg','jpeg','png','gif','webp'];
+    $profile_picture = (!empty($user['profile_picture']) && file_exists($upload_dir . $user['profile_picture']))
+        ? $user['profile_picture']
+        : "default.png";
 
-            if (in_array($file_type, $allowed)) {
-                if (move_uploaded_file($_FILES['profile_picture']['tmp_name'], $target_path)) {
-                    $profile_picture = $file_name;
-                } else {
-                    echo "<p style='color:red;'>❌ Failed to upload file.</p>";
-                }
+    // ✅ Handle file upload
+    if (!empty($_FILES['profile_picture']['name'])) {
+        $file_name = basename($_FILES['profile_picture']['name']);
+        $target_path = $upload_dir . $file_name;
+        $file_type = strtolower(pathinfo($target_path, PATHINFO_EXTENSION));
+        $allowed = ['jpg','jpeg','png','gif','webp'];
+
+        if (in_array($file_type, $allowed)) {
+            if (move_uploaded_file($_FILES['profile_picture']['tmp_name'], $target_path)) {
+                $profile_picture = $file_name;
             } else {
-                echo "<p style='color:red;'>❌ Invalid image type.</p>";
+                header("location:msg.php?msg=Failed to upload file&goto=panel.php&type=error");
+                exit();
             }
-        }
-
-        // Update query
-        if (!empty($new_password)) {
-            $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
-            $stmt = $conn->prepare("UPDATE users SET name=?, password=?, profile_picture=? WHERE id=?");
-            $stmt->bind_param("sssi", $new_name, $hashed_password, $profile_picture, $id);
         } else {
-            $stmt = $conn->prepare("UPDATE users SET name=?, profile_picture=? WHERE id=?");
-            $stmt->bind_param("ssi", $new_name, $profile_picture, $id);
+            header("location:msg.php?msg=Invalid image type&goto=panel.php&type=error");
+            exit();
         }
-
-        if ($stmt->execute()) {
-            echo "<p style='color:lightgreen;'>✅ Profile updated successfully!</p>";
-            $_SESSION['name'] = $new_name;
-            echo '<meta http-equiv="refresh" content="2;url=panel.php">';
-        } else {
-            echo "<p style='color:red;'>❌ Error updating profile: " . $stmt->error . "</p>";
-        }
-
-        $stmt->close();
     }
 
-    $conn->close();
+    // ✅ Update user info
+    if (!empty($new_password)) {
+        $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
+        $stmt = $conn->prepare("UPDATE users SET name=?, bio=?, password=?, profile_picture=? WHERE id=?");
+        $stmt->bind_param("ssssi", $new_name, $new_bio, $hashed_password, $profile_picture, $id);
+    } else {
+        $stmt = $conn->prepare("UPDATE users SET name=?, bio=?, profile_picture=? WHERE id=?");
+        $stmt->bind_param("sssi", $new_name, $new_bio, $profile_picture, $id);
+    }
+
+    if ($stmt->execute()) {
+        $_SESSION['name'] = $new_name;
+        header("location:msg.php?msg=Profile%20updated%20successfully&goto=panel.php&type=success");
+        exit();
+    } else {
+        header("location:msg.php?msg=Error%20updating%20profile&goto=panel.php&type=error");
+        exit();
+    }
+}
+
+$conn->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -78,50 +96,51 @@ if(!isset($_SESSION['login'])){
   <link rel="stylesheet" href="/static/style.css">
 </head>
 
-<body class="update-user-body">
-
+<body class="panel-body">
   <!-- ✅ Fixed Header -->
-  <header class="main-header">
-    <div class="main-header-container">
-      <h1 class="main-header-logo">🌙 User Panel</h1>
-      <nav class="main-header-nav">
-        <a href="panel.php" class="main-header-link">Dashboard</a>
-        <a href="update_user.php" class="main-header-link">Edit Profile</a>
-        <a href="logout.php?logout=true" class="main-header-logout">🚪 Logout</a>
+  <header class="panel-header">
+    <div class="panel-header-container">
+      <h1 class="panel-header-logo">🌙 User Panel</h1>
+      <nav class="panel-header-nav">
+        <a href="panel.php" class="panel-header-link">Dashboard</a>
+        <a href="?logout=true" class="panel-header-logout">🚪 Logout</a>
       </nav>
     </div>
   </header>
 
   <!-- ✅ Main Content -->
-  <main class="update-user-container">
-    <h2 class="update-user-title">👋 Welcome, <?php echo htmlspecialchars($user['name']); ?></h2>
-
-    <form method="POST" enctype="multipart/form-data" class="update-user-form">
-      
-      <label for="username" class="update-user-label">Username (read-only)</label>
-      <input type="text" id="username" value="<?php echo htmlspecialchars($user['username']); ?>" readonly class="update-user-input readonly">
-
-      <label for="email" class="update-user-label">Email (read-only)</label>
-      <input type="email" id="email" value="<?php echo htmlspecialchars($user['email']); ?>" readonly class="update-user-input readonly">
-
-      <label for="name" class="update-user-label">Name</label>
-      <input type="text" id="name" name="name" value="<?php echo htmlspecialchars($user['name']); ?>" required class="update-user-input">
-
-      <label for="password" class="update-user-label">New Password (leave blank to keep current)</label>
-      <input type="password" id="password" name="password" class="update-user-input">
-
-      <label for="profile_picture" class="update-user-label">Profile Picture</label>
-      <input type="file" id="profile_picture" name="profile_picture" accept="image/*" class="update-user-input-file">
-
-      <div class="update-user-preview">
-        <p>Current Image:</p>
-        <img src="/static/users_profiles/<?php echo htmlspecialchars($user['profile_picture']); ?>" alt="Profile Picture" class="update-user-image">
+  <main class="panel-container">
+    <div class="panel-user-info">
+      <img src="http://static.webapp.ir/profile_picture/<?php echo htmlspecialchars($user['profile_picture']); ?>" 
+           alt="Profile Picture" 
+           class="panel-user-avatar">
+      <div>
+        <h2 class="panel-user-name">👋 <?php echo htmlspecialchars($user['name']); ?></h2>
+        <p class="panel-user-bio"><?php echo nl2br(htmlspecialchars($user['bio'] ?? 'No bio yet.')); ?></p>
       </div>
+    </div>
 
-      <button type="submit" class="update-user-btn">💾 Save Changes</button>
+    <form method="POST" enctype="multipart/form-data" class="panel-form">
+      <label class="panel-label">Username (read-only)</label>
+      <input type="text" value="<?php echo htmlspecialchars($user['username']); ?>" readonly class="panel-input readonly">
+
+      <label class="panel-label">Email (read-only)</label>
+      <input type="email" value="<?php echo htmlspecialchars($user['email']); ?>" readonly class="panel-input readonly">
+
+      <label class="panel-label">Name</label>
+      <input type="text" name="name" value="<?php echo htmlspecialchars($user['name']); ?>" required class="panel-input">
+
+      <label class="panel-label">Bio</label>
+      <textarea name="bio" placeholder="Tell us about yourself..." class="panel-textarea"><?php echo htmlspecialchars($user['bio']); ?></textarea>
+
+      <label class="panel-label">New Password (leave blank to keep current)</label>
+      <input type="password" name="password" class="panel-input">
+
+      <label class="panel-label">Profile Picture</label>
+      <input type="file" name="profile_picture" accept="image/*" class="panel-file">
+
+      <button type="submit" class="panel-btn">💾 Save Changes</button>
     </form>
   </main>
-
 </body>
 </html>
-<?php } ?>
