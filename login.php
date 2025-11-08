@@ -1,10 +1,11 @@
 <?php
 require_once("connection.php");
 
-
-
 session_start();
+session_regenerate_id(true);
+
 $msg = "";
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email']);
     $password = trim($_POST['password']);
@@ -20,10 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $msg = "Please fill in both email and password";
         $color = "red";
         
-    }
-
-    // ✅ Step 2: Validate email format
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    }elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
   
         $msg = " Invalid email format";
         $color= "red";
@@ -31,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     
     if (empty($msg)){
-// Step 3: Check if user exists
+    // Step 3: Check if user exists
     $stmt = $conn->prepare("SELECT id, username, name, email, password FROM users WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
@@ -47,13 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // ✅ Valid login
             $_SESSION['login'] = true;
-            // $_SESSION['email'] = $user['email'];
-            // $_SESSION['name'] = $user['name'];
             $_SESSION['user_id'] = $user['id'];
-
-            
-
-            header("location:msg.php?msg=Login successful&goto=panel.php&type=success");
 
             // ✅ Added: Log success
             $status = 1;
@@ -63,12 +55,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $log_stmt->execute();
             $log_stmt->close();
 
+            header("location:msg.php?msg=Login successful&goto=panel.php&type=success");
             exit();
 
         } else {
             
             $msg = 'Incorrect password';
             $color = "red";
+            
             // ✅ Added: Log failed password
             $status = 0;
             $log_stmt = $conn->prepare("INSERT INTO login_log (ip_address, user_agent, referer, login_status, username)
@@ -93,7 +87,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $stmt->close();
     $conn->close();
-}}
+}
+  }
 ?>
 
 

@@ -54,7 +54,7 @@ $profile_picture = (!empty($data['profile_picture']))
 
 // ✅ Fetch user tweets from MySQL
 $stmt = $conn->prepare("SELECT content, created_at FROM tweets WHERE user_id = ? ORDER BY created_at DESC");
-$stmt->bind_param("i", $user_id);
+$stmt->bind_param("i", $data['id']);
 $stmt->execute();
 $result = $stmt->get_result();
 $tweets = $result->fetch_all(MYSQLI_ASSOC);
@@ -106,6 +106,7 @@ $conn->close();
             <p class="profile-tweet-time">
               <?php echo htmlspecialchars($tweet['created_at'] ?? ""); ?>
             </p>
+            
           </div>
         <?php endforeach; ?>
       <?php endif; ?>

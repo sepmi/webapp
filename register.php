@@ -3,6 +3,8 @@
 require_once("connection.php");
 session_start();
 
+$msg ="";
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = trim($_POST['name']);
     $username = trim($_POST['username']);
@@ -14,18 +16,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Step 1: Basic validation
     if (empty($name) || empty($username) || empty($email) || empty($password) || empty($invitation_code)) {
         
-        header("location:msg.php?msg=❌ All fields are required&goto=register.php&type=error");
-        exit();
-    }
-
-    // Step 2: Validate email format
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        // header("location:msg.php?msg=❌ All fields are required&goto=register.php&type=error");
+        $msg = "All fields are required";
+        $color = "red";
+        
+    }elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         
         header("location:msg.php?msg=❌ Invalid email format&goto=register.php&type=error");
         
         exit();
     }
 
+    if(empty($msg)){
     // Step 3: Check if email already exists
     $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
     $stmt->bind_param("s", $email);
@@ -83,15 +85,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $update->execute();
         $update->close();
 
-        echo "<p style='color:green;'>✅ Registration successful! Redirecting to login...</p>";
-        echo '<meta http-equiv="refresh" content="3;url=login.php">';
+        
+        header("location:msg.php?msg=✅ Registration successful! Redirecting to login...&goto=login.php&type=success");
+
     } else {
         echo "<p style='color:red;'>❌ Error: " . $stmt->error . "</p>";
     }
 
     $stmt->close();
     $conn->close();
-}
+    }
+  }
 ?>
 
 
@@ -117,37 +121,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <!-- Name -->
       <div class="reg-group">
         <label for="name" class="reg-label">Name</label>
-        <input type="text" id="name" name="name" required class="reg-input" placeholder="Enter your name">
+        <input type="text" id="name" name="name" require class="reg-input" placeholder="Enter your name">
       </div>
 
       <!-- Username -->
       <div class="reg-group">
         <label for="username" class="reg-label">Username</label>
-        <input type="text" id="username" name="username" required class="reg-input" placeholder="Enter your username">
+        <input type="text" id="username" name="username" require class="reg-input" placeholder="Enter your username">
       </div>
 
       <!-- Email -->
       <div class="reg-group">
         <label for="email" class="reg-label">Email</label>
-        <input type="email" id="email" name="email" required class="reg-input" placeholder="you@example.com">
+        <input type="email" id="email" name="email"require  class="reg-input" placeholder="you@example.com">
       </div>
 
       <!-- Password -->
       <div class="reg-group">
         <label for="password" class="reg-label">Password</label>
-        <input type="password" id="password" name="password" required minlength="6" class="reg-input" placeholder="Create a password">
+        <input type="password" id="password" name="password" require minlength="6" class="reg-input" placeholder="Create a password">
       </div>
 
       <!-- Invitation Code -->
       <div class="reg-group">
         <label for="invitation_code" class="reg-label">Invitation Code</label>
-        <input type="text" id="invitation_code" name="invitation_code" required class="reg-input" placeholder="Enter your invitation code">
+        <input type="text" id="invitation_code" name="invitation_code" require class="reg-input" placeholder="Enter your invitation code">
       </div>
 
       <!-- Submit Button -->
       <button type="submit" name="submit" class="reg-button">Register</button>
     </form>
 
+    <?php if(!empty($msg)): ?>
+
+    <p class="reg-footer-text" style="color: <?php echo htmlspecialchars($color); ?>">
+      <?php echo htmlspecialchars($msg); ?>
+    </p>
+    <?php endif ?>
+    
     <p class="reg-footer-text">
       Already have an account? 
       <a href="/login.php" class="reg-link">Login here</a>

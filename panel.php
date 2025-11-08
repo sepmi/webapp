@@ -49,7 +49,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // ✅ Handle file upload
     if (!empty($_FILES['profile_picture']['name'])) {
-        $file_name = basename($_FILES['profile_picture']['name']);
+        
+
+        // Get original filename and extension
+        $original_name = basename($_FILES['profile_picture']['name']);
+        $extension = pathinfo($original_name, PATHINFO_EXTENSION);
+
+        // Get user info (assume you already have them)
+        $user_name = preg_replace("/[^a-zA-Z0-9_-]/", "", strtolower($user['username'])); // safe username
+        $user_id = intval($user['id']);
+
+        // Build new file name: username_originalname_userid.ext
+        $file_name = "{$user_name}_" . pathinfo($original_name, PATHINFO_FILENAME) . "_{$user_id}." . $extension;
+
+
+
+
+
         $target_path = $upload_dir . $file_name;
         $file_type = strtolower(pathinfo($target_path, PATHINFO_EXTENSION));
         $allowed = ['jpg','jpeg','png','gif','webp'];
