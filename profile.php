@@ -23,6 +23,8 @@ if (!isset($_GET['user_id']) || !is_numeric($_GET['user_id'])) {
 }
 
 $user_id = intval($_GET['user_id']);
+$is_logged_in = isset($_SESSION['login']);
+$current_user_id = $is_logged_in ? $_SESSION['user_id'] : null;
 
 // ✅ Fetch user data from Flask API
 $api_url = "http://localhost:5000/api/users/" . $user_id;
@@ -53,7 +55,7 @@ $profile_picture = (!empty($data['profile_picture']))
     : "default.png";
 
 // ✅ Fetch user tweets from MySQL
-$stmt = $conn->prepare("SELECT content, created_at FROM tweets WHERE user_id = ? ORDER BY created_at DESC");
+$stmt = $conn->prepare("SELECT id, content, created_at FROM tweets WHERE user_id = ? ORDER BY created_at DESC");
 $stmt->bind_param("i", $data['id']);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -102,12 +104,18 @@ $conn->close();
       <?php else: ?>
         <?php foreach ($tweets as $tweet): ?>
           <div class="profile-tweet-card">
-            <p class="profile-tweet-content"><?php echo nl2br(htmlspecialchars($tweet['content'])); ?></p>
-            <p class="profile-tweet-time">
-              <?php echo htmlspecialchars($tweet['created_at'] ?? ""); ?>
-            </p>
-            
+            <div class="profile-tweet-header">
+              <p class="profile-tweet-content"><?php echo nl2br(htmlspecialchars($tweet['content'])); ?></p>
+
+              <?php if ($is_logged_in && $current_user_id === $user_id): ?>
+                <a href="delete.php?tweet_id=<?php echo $tweet['id']; ?>" 
+                   class="profile-delete-btn"
+                   onclick="return confirm('🗑️ Are you sure you want to delete this tweet?');">❌</a>
+              <?php endif; ?>
+            </div>
+            <p class="profile-tweet-time"><?php echo htmlspecialchars($tweet['created_at']); ?></p>
           </div>
+          
         <?php endforeach; ?>
       <?php endif; ?>
     </div>
