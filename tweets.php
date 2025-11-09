@@ -3,13 +3,8 @@ header("Content-Type: application/json; charset=UTF-8");
 require_once("connection.php");
 
 // ✅ Only allow GET requests
-if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
-    http_response_code(405);
-    echo json_encode(["error" => "Method not allowed. Only GET requests are supported."]);
-    exit();
-}
-
-try {
+if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+    try {
     // ✅ Fetch all tweets with user info
     $sql = "
         SELECT 
@@ -53,4 +48,7 @@ try {
 } finally {
     $conn->close();
 }
+}
+
+
 ?>
